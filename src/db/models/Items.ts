@@ -4,10 +4,13 @@ export interface IItem extends Document {
   description: string;
 }
 
-const itemSchema = new Schema({
-  title: { type: SchemaTypes.String, required: true },
-  description: { type: SchemaTypes.String, required: true },
-});
+const itemSchema = new Schema(
+  {
+    title: { type: SchemaTypes.String, required: true },
+    description: { type: SchemaTypes.String, required: true },
+  },
+  { timestamps: true }
+);
 
 const Item = model<IItem>('Item', itemSchema);
 

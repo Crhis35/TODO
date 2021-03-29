@@ -5,17 +5,17 @@ import {
   QueryGetItemArgs,
   QueryListItemsArgs,
 } from '../generated/graphql';
+import { DateTimeResolver } from 'graphql-scalars';
 import { ApolloError } from 'apollo-server-express';
 import { pubsub } from '../index';
 import Item from './models/Items';
-
-const todoList = require('./list.json');
 
 const ITEM_CREATED = 'ITEM_CREATED';
 const ITEM_UPDATED = 'ITEM_UPDATED';
 const ITEM_DELETED = 'ITEM_DELETED';
 
 export const resolvers = {
+  DateTime: DateTimeResolver,
   Query: {
     listItems: async (
       _: any,
