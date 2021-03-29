@@ -1,0 +1,53 @@
+scalar DateTime
+
+enum Order {
+  ASC
+  DESC
+}
+
+input SortBy {
+  field: String!
+  order: Order!
+}
+
+type List @entity {
+  _id: ID! @id
+  title: String! @column
+  items(title: String): [Item] @link
+}
+
+type Item @entity {
+  _id: ID! @id
+  title: String! @column
+  description: String! @column
+  createdAt: DateTime! @column
+  updatedAt: DateTime! @column
+}
+
+input ItemInput {
+  title: String!
+  description: String!
+}
+
+type ItemPaginator {
+  items: [Item]!
+  currentPage: Int!
+  totalPages: Int!
+}
+
+type Query {
+  listItems(search: String, page: Int, limit: Int, sort: SortBy): ItemPaginator
+  getItem(id: ID!): Item
+}
+
+type Mutation {
+  createItem(input: ItemInput!): Item
+  updateItem(id: ID!, input: ItemInput!): Item
+  deleteItem(id: ID!): String
+}
+
+type Subscription {
+  onItemCreated: Item
+  onItemUpdated: Item
+  onItemDeleted: Item
+}

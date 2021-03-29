@@ -1,0 +1,43 @@
+{
+  "name": "todo",
+  "version": "1.0.0",
+  "description": "To Do App",
+  "main": "index.js",
+  "repository": "https://github.com/Crhis35/TODO.git",
+  "author": "Crhistian Caraballo",
+  "scripts": {
+    "dev": "nodemon src/index.ts --exec ts-node src/index.ts -e ts,graphql",
+    "gen-types": "graphql-codegen --config codegen.yml"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@graphql-codegen/cli": "1.21.3",
+    "@graphql-codegen/introspection": "1.18.1",
+    "@graphql-codegen/typescript": "1.21.1",
+    "@graphql-codegen/typescript-mongodb": "1.18.1",
+    "@graphql-codegen/typescript-resolvers": "1.19.0",
+    "@types/cors": "^2.8.10",
+    "@types/express": "^4.17.11",
+    "@types/express-graphql": "^0.9.0",
+    "@types/mongodb": "^3.6.10",
+    "@types/node": "^14.14.37",
+    "@types/uuid": "^8.3.0",
+    "dotenv": "^8.2.0",
+    "nodemon": "^2.0.7",
+    "ts-node": "^9.1.1",
+    "typescript": "^4.2.3"
+  },
+  "dependencies": {
+    "apollo-server-express": "^2.22.1",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "graphql": "^15.5.0",
+    "graphql-import-node": "^0.0.4",
+    "graphql-scalars": "^1.9.0",
+    "graphql-tools": "^7.0.4",
+    "mongodb": "^3.6.5",
+    "mongoose": "^5.12.2",
+    "ncp": "^2.0.0",
+    "uuid": "^8.3.2"
+  }
+}
