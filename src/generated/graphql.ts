@@ -12,6 +12,7 @@ export type Scalars = {
   Int: number;
   Float: number;
   DateTime: any;
+  Upload: any;
 };
 
 
@@ -28,6 +29,7 @@ export type Item = {
   _id: Scalars['ID'];
   title: Scalars['String'];
   description: Scalars['String'];
+  image?: Maybe<Scalars['String']>;
   createdAt: Scalars['DateTime'];
   updatedAt: Scalars['DateTime'];
 };
@@ -35,6 +37,7 @@ export type Item = {
 export type ItemInput = {
   title: Scalars['String'];
   description: Scalars['String'];
+  image?: Maybe<Scalars['String']>;
 };
 
 export type ItemPaginator = {
@@ -61,6 +64,7 @@ export type Mutation = {
   createItem?: Maybe<Item>;
   updateItem?: Maybe<Item>;
   deleteItem?: Maybe<Scalars['String']>;
+  imageUploader: Scalars['String'];
 };
 
 
@@ -77,6 +81,11 @@ export type MutationUpdateItemArgs = {
 
 export type MutationDeleteItemArgs = {
   id: Scalars['ID'];
+};
+
+
+export type MutationImageUploaderArgs = {
+  file: Scalars['Upload'];
 };
 
 export enum Order {
@@ -114,6 +123,7 @@ export type Subscription = {
   onItemUpdated?: Maybe<Item>;
   onItemDeleted?: Maybe<Item>;
 };
+
 
 export type AdditionalEntityFields = {
   path?: Maybe<Scalars['String']>;
@@ -211,6 +221,7 @@ export type ResolversTypes = {
   Query: ResolverTypeWrapper<{}>;
   SortBy: SortBy;
   Subscription: ResolverTypeWrapper<{}>;
+  Upload: ResolverTypeWrapper<Scalars['Upload']>;
   AdditionalEntityFields: AdditionalEntityFields;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
 };
@@ -229,6 +240,7 @@ export type ResolversParentTypes = {
   Query: {};
   SortBy: SortBy;
   Subscription: {};
+  Upload: Scalars['Upload'];
   AdditionalEntityFields: AdditionalEntityFields;
   Boolean: Scalars['Boolean'];
 };
@@ -276,6 +288,7 @@ export type ItemResolvers<ContextType = any, ParentType extends ResolversParentT
   _id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   description?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  image?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -299,6 +312,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   createItem?: Resolver<Maybe<ResolversTypes['Item']>, ParentType, ContextType, RequireFields<MutationCreateItemArgs, 'input'>>;
   updateItem?: Resolver<Maybe<ResolversTypes['Item']>, ParentType, ContextType, RequireFields<MutationUpdateItemArgs, 'id' | 'input'>>;
   deleteItem?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType, RequireFields<MutationDeleteItemArgs, 'id'>>;
+  imageUploader?: Resolver<ResolversTypes['String'], ParentType, ContextType, RequireFields<MutationImageUploaderArgs, 'file'>>;
 };
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
@@ -312,6 +326,10 @@ export type SubscriptionResolvers<ContextType = any, ParentType extends Resolver
   onItemDeleted?: SubscriptionResolver<Maybe<ResolversTypes['Item']>, "onItemDeleted", ParentType, ContextType>;
 };
 
+export interface UploadScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['Upload'], any> {
+  name: 'Upload';
+}
+
 export type Resolvers<ContextType = any> = {
   DateTime?: GraphQLScalarType;
   Item?: ItemResolvers<ContextType>;
@@ -320,6 +338,7 @@ export type Resolvers<ContextType = any> = {
   Mutation?: MutationResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   Subscription?: SubscriptionResolvers<ContextType>;
+  Upload?: GraphQLScalarType;
 };
 
 
@@ -350,6 +369,7 @@ export type ItemDbObject = {
   _id: ObjectID,
   title: string,
   description: string,
+  image?: Maybe<string>,
   createdAt: any,
   updatedAt: any,
 };

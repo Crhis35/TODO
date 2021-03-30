@@ -1,4 +1,5 @@
 scalar DateTime
+scalar Upload
 
 enum Order {
   ASC
@@ -20,6 +21,7 @@ type Item @entity {
   _id: ID! @id
   title: String! @column
   description: String! @column
+  image: String @column
   createdAt: DateTime! @column
   updatedAt: DateTime! @column
 }
@@ -27,6 +29,7 @@ type Item @entity {
 input ItemInput {
   title: String!
   description: String!
+  image: String
 }
 
 type ItemPaginator {
@@ -44,6 +47,7 @@ type Mutation {
   createItem(input: ItemInput!): Item
   updateItem(id: ID!, input: ItemInput!): Item
   deleteItem(id: ID!): String
+  imageUploader(file: Upload!): String!
 }
 
 type Subscription {

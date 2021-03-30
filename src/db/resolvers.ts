@@ -4,11 +4,19 @@ import {
   MutationDeleteItemArgs,
   QueryGetItemArgs,
   QueryListItemsArgs,
+  MutationImageUploaderArgs,
 } from '../generated/graphql';
+
+import { join, parse } from 'path';
+
+import { createWriteStream } from 'fs';
+
 import { DateTimeResolver } from 'graphql-scalars';
 import { ApolloError } from 'apollo-server-express';
 import { pubsub } from '../index';
 import Item from './models/Items';
+import { ensureDirectoryExistence } from '../utils';
+import { GraphQLUpload } from 'graphql-upload';
 
 const ITEM_CREATED = 'ITEM_CREATED';
 const ITEM_UPDATED = 'ITEM_UPDATED';
@@ -16,6 +24,7 @@ const ITEM_DELETED = 'ITEM_DELETED';
 
 export const resolvers = {
   DateTime: DateTimeResolver,
+  Upload: GraphQLUpload,
   Query: {
     listItems: async (
       _: any,
@@ -58,6 +67,32 @@ export const resolvers = {
     },
   },
   Mutation: {
+    imageUploader: async (_: any, { file }: MutationImageUploaderArgs) => {
+      try {
+        const { filename, createReadStream } = await file;
+        let stream = createReadStream();
+        let { ext, name } = parse(filename);
+        console.log(filename);
+        name = name.replace(/([^a-z0-9 ]+)/gi, '-').replace(' ', '_');
+
+        let serverFile = join(
+          __dirname,
+          `../uploads/${name}-${Date.now()}${ext}`
+        );
+
+        serverFile = serverFile.replace(' ', '_');
+        ensureDirectoryExistence(join(__dirname, `../uploads`));
+        let writeStream = await createWriteStream(serverFile);
+
+        await stream.pipe(writeStream);
+
+        serverFile = `uploads${serverFile.split('uploads')[1]}`;
+
+        return serverFile;
+      } catch (err) {
+        throw new ApolloError(err.message);
+      }
+    },
     createItem: async (_: any, { input }: MutationCreateItemArgs) => {
       try {
         const item = await Item.create({
