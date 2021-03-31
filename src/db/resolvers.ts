@@ -22,6 +22,30 @@ const ITEM_CREATED = 'ITEM_CREATED';
 const ITEM_UPDATED = 'ITEM_UPDATED';
 const ITEM_DELETED = 'ITEM_DELETED';
 
+const storeUpload = async ({ stream, filename }: any) => {
+  ensureDirectoryExistence(`${__dirname}/../images`);
+  let { ext, name } = parse(filename);
+
+  name = name.replace(/([^a-z0-9 ]+)/gi, '-').replace(' ', '_');
+
+  let serverFile = join(__dirname, `/../images/${name}-${Date.now()}${ext}`);
+
+  serverFile = serverFile.replace(' ', '_');
+  const fileOutput = `images${serverFile.split('images')[1]}`;
+  return new Promise((resolve, reject) =>
+    stream
+      .pipe(createWriteStream(serverFile))
+      .on('finish', () => resolve(fileOutput))
+      .on('error', reject)
+  );
+};
+const processUpload = async (upload: any) => {
+  const { createReadStream, filename, mimetype } = await upload;
+  const stream = createReadStream();
+  const file = await storeUpload({ stream, filename });
+  return file;
+};
+
 export const resolvers = {
   DateTime: DateTimeResolver,
   Upload: GraphQLUpload,
@@ -69,26 +93,7 @@ export const resolvers = {
   Mutation: {
     imageUploader: async (_: any, { file }: MutationImageUploaderArgs) => {
       try {
-        const { filename, createReadStream } = await file;
-        let stream = createReadStream();
-        let { ext, name } = parse(filename);
-        console.log(filename);
-        name = name.replace(/([^a-z0-9 ]+)/gi, '-').replace(' ', '_');
-
-        let serverFile = join(
-          __dirname,
-          `../uploads/${name}-${Date.now()}${ext}`
-        );
-
-        serverFile = serverFile.replace(' ', '_');
-        ensureDirectoryExistence(join(__dirname, `../uploads`));
-        let writeStream = await createWriteStream(serverFile);
-
-        await stream.pipe(writeStream);
-
-        serverFile = `uploads${serverFile.split('uploads')[1]}`;
-
-        return serverFile;
+        return await processUpload(file);
       } catch (err) {
         throw new ApolloError(err.message);
       }

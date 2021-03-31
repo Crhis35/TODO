@@ -20,7 +20,7 @@ export const pubsub = new PubSub();
 const app = express();
 app.disable('x-powered-by');
 app.use(express.json({ limit: '10kb' }));
-app.use(express.static(join(__dirname, './uploads')));
+app.use(express.static(join(__dirname, './images')));
 app.use(graphqlUploadExpress());
 
 const schema = makeExecutableSchema({
@@ -29,6 +29,7 @@ const schema = makeExecutableSchema({
 });
 const server = new ApolloServer({
   schema,
+  uploads: false,
   introspection: environment.apollo.introspection,
   playground: environment.apollo.playground,
 });

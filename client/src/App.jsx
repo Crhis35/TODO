@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import { useQuery, gql } from '@apollo/client';
+import { ToastContainer } from 'react-toastify';
+import CreateItem from './component/Item/Item';
 
 const LIST_ITEMS = gql`
   query listItems {
@@ -17,22 +19,22 @@ const LIST_ITEMS = gql`
   }
 `;
 const App = () => {
-  const { loading, error, data } = useQuery(LIST_ITEMS);
-
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error :(</p>;
-  return data.listItems.items.map(({ title, description }) => (
-    <div key={title}>
-      <p>
-        {title}: {description}
-      </p>
-      <img
-        src="http://localhost:4000/image/xiaomi-1617131752053.jpeg"
-        alt=""
-        srcset=""
+  return (
+    <Fragment>
+      <CreateItem />
+      <ToastContainer
+        position="top-right"
+        autoClose={2000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        puaseOnVisibilityChange
+        draggable
+        pauseOnHover={false}
       />
-    </div>
-  ));
+    </Fragment>
+  );
 };
 
 export default App;

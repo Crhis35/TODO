@@ -4,8 +4,10 @@ import App from './App';
 
 import { ApolloProvider } from '@apollo/client';
 import client from './utils/apolloClient';
-
 import reportWebVitals from './reportWebVitals';
+
+import 'semantic-ui-css/semantic.min.css';
+import 'react-toastify/dist/ReactToastify.css';
 
 ReactDOM.render(
   <React.StrictMode>
