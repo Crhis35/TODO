@@ -21,7 +21,7 @@ const app = express();
 app.disable('x-powered-by');
 app.use(express.json({ limit: '10kb' }));
 app.use(express.static(join(__dirname, './images')));
-app.use(graphqlUploadExpress());
+app.use(graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 10 }));
 
 const schema = makeExecutableSchema({
   typeDefs: [DIRECTIVES, typeDefs],
@@ -32,6 +32,12 @@ const server = new ApolloServer({
   uploads: false,
   introspection: environment.apollo.introspection,
   playground: environment.apollo.playground,
+  subscriptions: {
+    path: '/subscriptions',
+    onConnect: (connectionParams, webSocket, context) => {
+      console.log('Connected!');
+    },
+  },
 });
 
 const startApp = async () => {
@@ -54,7 +60,7 @@ const startApp = async () => {
     httpServer.listen(environment.port, () =>
       Consola.success({
         badge: true,
-        message: `🚀 Server ready at http://localhost:${environment.port}${server.graphqlPath}`,
+        message: `🚀 Server ready at http://localhost:${environment.port}${server.subscriptionsPath}`,
       })
     );
   } catch (error) {

@@ -10,7 +10,6 @@ import {
 import { join, parse } from 'path';
 
 import { createWriteStream } from 'fs';
-
 import { DateTimeResolver } from 'graphql-scalars';
 import { ApolloError } from 'apollo-server-express';
 import { pubsub } from '../index';
@@ -117,6 +116,7 @@ export const resolvers = {
           { id },
           {
             ...input,
+            image: input.image || '',
             updatedAt: new Date(),
           },
           {
@@ -130,10 +130,9 @@ export const resolvers = {
     },
     deleteItem: async (_: any, { id }: MutationDeleteItemArgs) => {
       try {
-        const item = await Item.deleteOne({ id });
-
+        const item = await Item.findByIdAndRemove(id);
         pubsub.publish(ITEM_DELETED, { onItemDeleted: item });
-        return 'Deleted';
+        return id;
       } catch (error) {
         new ApolloError(error.message);
       }

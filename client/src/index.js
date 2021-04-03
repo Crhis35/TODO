@@ -10,11 +10,9 @@ import 'semantic-ui-css/semantic.min.css';
 import 'react-toastify/dist/ReactToastify.css';
 
 ReactDOM.render(
-  <React.StrictMode>
-    <ApolloProvider client={client}>
-      <App />
-    </ApolloProvider>
-  </React.StrictMode>,
+  <ApolloProvider client={client}>
+    <App />
+  </ApolloProvider>,
   document.getElementById('root')
 );
 
