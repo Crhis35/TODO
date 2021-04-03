@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useState } from 'react';
 import { useQuery, gql } from '@apollo/client';
 import { ToastContainer } from 'react-toastify';
 import FormItem from './components/Item/Form';
@@ -38,6 +38,7 @@ const App = () => {
     },
   });
   if (loading) return <Loader />;
+  console.log(data);
   return (
     <Fragment>
       <Container>
@@ -52,31 +53,33 @@ const App = () => {
             <Grid.Column width={8}>
               <Card data={data} />
             </Grid.Column>
-            <Button
-              onClick={() => {
-                fetchMore({
-                  variables: {
-                    limit: data.length + 5,
-                  },
-                  updateQuery: (prev, { fetchMoreResult }) => {
-                    if (!fetchMoreResult) return prev;
-                    const newObect = {
-                      currentPage: fetchMoreResult.listItems.currentPage,
-                      items: [
-                        ...prev.listItems.items,
-                        ...fetchMoreResult.listItems.items,
-                      ],
-                      totalPages: fetchMoreResult.listItems.totalPages,
-                    };
-                    return Object.assign({}, prev, {
-                      listItems: newObect,
-                    });
-                  },
-                });
-              }}
-            >
-              More
-            </Button>
+            {data.listItems.currentPage !== data.listItems.totalPages ? (
+              <Button
+                onClick={() => {
+                  fetchMore({
+                    variables: {
+                      page: data.listItems.currentPage + 1,
+                    },
+                    updateQuery: (prev, { fetchMoreResult }) => {
+                      if (!fetchMoreResult) return prev;
+                      const newObect = {
+                        currentPage: fetchMoreResult.listItems.currentPage,
+                        items: [
+                          ...prev.listItems.items,
+                          ...fetchMoreResult.listItems.items,
+                        ],
+                        totalPages: fetchMoreResult.listItems.totalPages,
+                      };
+                      return Object.assign({}, prev, {
+                        listItems: newObect,
+                      });
+                    },
+                  });
+                }}
+              >
+                More
+              </Button>
+            ) : null}
           </Grid.Row>
         </Grid>
       </Container>

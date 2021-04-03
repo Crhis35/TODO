@@ -114,7 +114,7 @@ const FormItem = () => {
         title: Yup.string().required('You must provide a name'),
         description: Yup.string().required('You must provide a description'),
       })}
-      onSubmit={async (values) => {
+      onSubmit={async (values, { resetForm }) => {
         try {
           setLoading(true);
           const input = {
@@ -122,6 +122,7 @@ const FormItem = () => {
             image,
           };
           createItem({ variables: { input } });
+          resetForm();
           toast.success('Note created!');
         } catch (error) {
           console.log(error);
