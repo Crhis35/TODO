@@ -9,7 +9,7 @@ import {
 
 import { join, parse } from 'path';
 
-import { createWriteStream } from 'fs';
+import { createWriteStream, existsSync, unlink } from 'fs';
 import { DateTimeResolver } from 'graphql-scalars';
 import { ApolloError } from 'apollo-server-express';
 import { pubsub } from '../index';
@@ -131,7 +131,15 @@ export const resolvers = {
     deleteItem: async (_: any, { id }: MutationDeleteItemArgs) => {
       try {
         const item = await Item.findByIdAndRemove(id);
+        if (!item) throw new ApolloError('No item');
+
+        const path = `${__dirname}/../${item.image}`;
         pubsub.publish(ITEM_DELETED, { onItemDeleted: item });
+        if (existsSync(path)) {
+          unlink(path, (err) => {
+            if (err) throw err.message;
+          });
+        }
         return id;
       } catch (error) {
         new ApolloError(error.message);
