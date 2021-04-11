@@ -1,7 +1,7 @@
 import React from 'react';
 import Swal from 'sweetalert2';
 import { Image, Card, Button } from 'semantic-ui-react';
-import { useQuery, gql, useMutation } from '@apollo/client';
+import { gql, useMutation } from '@apollo/client';
 
 const DELETE_ITEM = gql`
   mutation deleteItem($id: ID!) {

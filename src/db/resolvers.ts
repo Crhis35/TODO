@@ -130,16 +130,20 @@ export const resolvers = {
     },
     deleteItem: async (_: any, { id }: MutationDeleteItemArgs) => {
       try {
+        let path: string;
+
         const item = await Item.findByIdAndRemove(id);
         if (!item) throw new ApolloError('No item');
+        if (item.image) {
+          path = `${__dirname}/../${item.image}`;
 
-        const path = `${__dirname}/../${item.image}`;
-        pubsub.publish(ITEM_DELETED, { onItemDeleted: item });
-        if (existsSync(path)) {
-          unlink(path, (err) => {
-            if (err) throw err.message;
-          });
+          if (existsSync(path)) {
+            unlink(path, (err) => {
+              if (err) throw err.message;
+            });
+          }
         }
+        pubsub.publish(ITEM_DELETED, { onItemDeleted: item });
         return id;
       } catch (error) {
         new ApolloError(error.message);

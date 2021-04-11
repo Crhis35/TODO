@@ -1,5 +1,5 @@
-import React, { Fragment, useState } from 'react';
-import { useQuery, gql } from '@apollo/client';
+import React, { Fragment } from 'react';
+import { useQuery, gql, useSubscription } from '@apollo/client';
 import { ToastContainer } from 'react-toastify';
 import FormItem from './components/Item/Form';
 import Card from './components/Card';
@@ -29,7 +29,19 @@ const LIST_ITEMS = gql`
     }
   }
 `;
+const ON_ITEM_CREATED = gql`
+  subscription onItemCreated {
+    onItemCreated {
+      _id
+      description
+      image
+      title
+    }
+  }
+`;
+
 const App = () => {
+  const { data: subs } = useSubscription(ON_ITEM_CREATED);
   const { data, loading, fetchMore, error } = useQuery(LIST_ITEMS, {
     variables: {
       limit: 5,
@@ -38,7 +50,7 @@ const App = () => {
     },
   });
   if (loading) return <Loader />;
-  console.log(data);
+  console.log(subs);
   return (
     <Fragment>
       <Container>
